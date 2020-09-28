@@ -7,17 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// UserRegister 用户注册接口
-func UserRegister(c *gin.Context) {
-	var s service.UserRegisterService
-	if err := c.ShouldBind(&s); err == nil {
-		res := s.Register()
-		c.JSON(200, res)
-	} else {
-		c.JSON(200, ErrorResponse(err))
-	}
-}
-
 // UserLogin 用户登录接口
 func UserLogin(c *gin.Context) {
 	var s service.UserLoginService
@@ -25,7 +14,17 @@ func UserLogin(c *gin.Context) {
 		res := s.Login(c)
 		c.JSON(200, res)
 	} else {
-		c.JSON(200, ErrorResponse(err))
+		c.JSON(200, serializer.ParamsErr(err))
+	}
+}
+
+func UserSocialLogin(c *gin.Context) {
+	var s service.UserSocialLoginService
+	if err := c.ShouldBind(&s); err == nil {
+		res := s.SocialLogin(c)
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, serializer.ParamsErr(err))
 	}
 }
 

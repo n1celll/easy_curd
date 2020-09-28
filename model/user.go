@@ -7,10 +7,11 @@ import (
 // User 用户模型
 type User struct {
 	gorm.Model
-	UserName string `gorm:"column:username"`
-	Password string
-	Nickname string
-	Avatar   string `gorm:"size:1000"`
+	UserName      string `gorm:"column:username"`
+	Password      string
+	Nickname      string
+	Avatar        string `gorm:"size:1000"`
+	WechatUnionid string
 }
 
 // GetUser 用ID获取用户

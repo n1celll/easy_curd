@@ -4,10 +4,10 @@ import "github.com/gin-gonic/gin"
 
 // Response 基础序列化器
 type Response struct {
-	Status  int         `json:"status"`
-	Data  interface{} `json:"data,omitempty"`
-	Msg   string      `json:"msg"`
-	Error string      `json:"error,omitempty"`
+	Status int         `json:"status"`
+	Data   interface{} `json:"data,omitempty"`
+	Msg    string      `json:"msg"`
+	Error  string      `json:"error,omitempty"`
 }
 
 // 三位数错误编码为复用http原本含义
@@ -21,15 +21,13 @@ const (
 	ForbiddenErr = 403
 	// ServerErr 服务器错误
 	ServerErr = 500
-	//ParamErr 各种奇奇怪怪的参数错误
-	ParamErr = 400
 )
 
 // CheckLogin 检查登录
-func CheckLogin() Response {
+func AuthErr() Response {
 	return Response{
 		Status: CodeCheckLogin,
-		Msg:  "未登录",
+		Msg:    "登录认证失败",
 	}
 }
 
@@ -37,11 +35,15 @@ func CheckLogin() Response {
 func Err(errCode int, msg string, err error) Response {
 	res := Response{
 		Status: errCode,
-		Msg:  msg,
+		Msg:    msg,
 	}
 	// 生产环境隐藏底层报错
 	if err != nil && gin.Mode() != gin.ReleaseMode {
 		res.Error = err.Error()
 	}
 	return res
+}
+
+func ParamsErr(err error) Response {
+	return Err(400, "参数错误", err)
 }

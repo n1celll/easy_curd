@@ -2,7 +2,6 @@ package util
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"os"
 	"strconv"
 	"time"
 )
@@ -14,7 +13,7 @@ const (
 
 )
 
-var secret = os.Getenv("SERVER_SECRET")
+var ServerSecret string
 
 func GenJwt(uid uint) string {
 	_token := jwt.NewWithClaims(jwt.SigningMethodHS256, &jwt.StandardClaims{
@@ -23,7 +22,7 @@ func GenJwt(uid uint) string {
 		ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(),
 		Subject:   strconv.Itoa(int(uid)),
 	})
-	token, _ := _token.SignedString([]byte(secret))
+	token, _ := _token.SignedString([]byte(ServerSecret))
 	return token
 }
 
@@ -33,7 +32,7 @@ func DecodeJwt(tokenString string) (*jwt.StandardClaims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}
-		return []byte(secret), nil
+		return []byte(ServerSecret), nil
 	})
 	if err != nil {
 		return nil, err
